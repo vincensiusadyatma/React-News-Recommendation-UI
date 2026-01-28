@@ -1,12 +1,12 @@
 import AuthLayout from "../layouts/AuthLayout";
 import { Link } from "react-router";
 
-const LoginPage = () => {
+const RegisterPage = () => {
     return(
         <AuthLayout>
             <div className="flex flex-col px-6 py-12 lg:px-8">
                 <div id="header-auth">
-                    <h2 className="mt-10 text-center text-3xl/9 font-bold tracking-tight text-white">Login Form</h2>
+                    <h2 className="mt-10 text-center text-3xl/9 font-bold tracking-tight text-white">Register Form</h2>
                 </div>
                 <div id="form-auth" className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form action="" className="space-y-6">
@@ -28,8 +28,8 @@ const LoginPage = () => {
                     </form>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-400">
-                        Doesn't Have An Account? 
-                        <Link to={"/auth/register"} className=" ms-2 font-semibold text-indigo-400 hover:text-indigo-300">Register</Link>
+                        Have An Account? 
+                        <Link to={"/auth/login"} className=" ms-2 font-semibold text-indigo-400 hover:text-indigo-300">Login</Link>
                         
                     </p>
                 </div>
@@ -39,4 +39,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage;
+export default RegisterPage;

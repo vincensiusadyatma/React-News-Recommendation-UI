@@ -1,4 +1,4 @@
-import type { PropsType } from "../types/PropsType";
+import type { PropsType } from "../Types/PropsType";
 
 const AuthLayout = ({children}: PropsType) => {
      return (

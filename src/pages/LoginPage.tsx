@@ -1,5 +1,6 @@
 import AuthLayout from "../layouts/AuthLayout";
 import { Link } from "react-router";
+import { login } from "../services/AuthService";
 
 const LoginPage = () => {
     return(
@@ -9,7 +10,14 @@ const LoginPage = () => {
                     <h2 className="mt-10 text-center text-3xl/9 font-bold tracking-tight text-white">Login Form</h2>
                 </div>
                 <div id="form-auth" className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                    <form action="" className="space-y-6">
+                    <form action="" className="space-y-6" onSubmit={(e)=>{
+                        e.preventDefault();
+                        login({
+                        username: "deathrix",
+                        password: "123",
+                        })
+
+                    }}>
                         <div>
                             <label htmlFor="" className="block text-sm/6 font-medium text-gray-100">Username</label>
                             <div>

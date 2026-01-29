@@ -5,7 +5,9 @@ import './index.css'
 
 import LoginPage from './pages/LoginPage.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
+import MainPage from './pages/MainPage.tsx'
 import GuestOnly from './guards/guestOnly.tsx'
+import AuthOnly from './guards/authOnly.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -16,11 +18,11 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/auth/register' element={<RegisterPage />} />
         </Route>
 
-        <Route element={<GuestOnly />}>
-        
+        <Route element={<AuthOnly />}>
+          <Route path='/main' element={<MainPage />} />
         </Route>
         
-        <Route path='/auth/register' element={<RegisterPage/>}/>
+      
 
 
       </Routes>

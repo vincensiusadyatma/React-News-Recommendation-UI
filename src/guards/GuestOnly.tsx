@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router"
 
 const GuestOnly = () => {
     if (checkAuth()) {
-        return <Navigate to="/register" replace />
+        return <Navigate to="/main" replace />
     }else{
         return (
             <>

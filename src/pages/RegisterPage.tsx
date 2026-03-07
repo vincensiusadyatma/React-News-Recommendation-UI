@@ -69,12 +69,12 @@ const RegisterPage = () => {
                         <button type="submit" onClick={(e)=>{
                             e.preventDefault();
                             handleSubmit()
-                        }} className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Login</button>
+                        }} className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Register</button>
                     </form>
 
                     <p className="mt-10 text-center text-sm/6 text-gray-400">
                         Have An Account? 
-                        <Link to={"/auth/login"} className=" ms-2 font-semibold text-indigo-400 hover:text-indigo-300">Register</Link>
+                        <Link to={"/auth/login"} className=" ms-2 font-semibold text-indigo-400 hover:text-indigo-300">Login</Link>
                         
                     </p>
                 </div>

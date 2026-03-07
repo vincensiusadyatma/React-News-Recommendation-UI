@@ -1,28 +1,32 @@
-import axios from "axios"
 import ApiConfig from "../config/ApiConfig"
-import type { AuthRequest } from "../Types/AuthRequest"
-import type { AuthResponse } from "../Types/AuthResponse"
+import axios from 'axios';
+// import { jwtDecode } from "jwt-decode";
 
-const login = async ({username,password}:AuthRequest) => {
+const Register = async (username:string,password:string)=>{
+    const data = {
+        "username" : username,
+        "password" : password
+    }
     try {
-        
-        const result =  await axios.get<AuthResponse[]>("user",{
-            baseURL:ApiConfig.BASE_URL
-        })
-        
-        const data =result.data.find((element)=>{
-            console.log(element)
-            return element.username == username;
-        })
-        
-        if (data?.token) {
-        localStorage.setItem("token", data.token)
-        }
-
-        return data
+        const response = await axios.post(ApiConfig.BASE_URL+"/register",data)
+        return response.data;
     } catch (error) {
         console.log(error)
     }
 }
 
-export {login}
+const Login = async(username:string,password:string)=>{
+    const data = {
+        "username" : username,
+        "password" : password
+    }
+    try {
+        const response = await axios.post(ApiConfig.BASE_URL+"/login",data,{withCredentials:true})
+        sessionStorage.setItem("isLogin","true")
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export {Login,Register}

@@ -1,3 +1,7 @@
-export const checkAuth = () => {
-  return !!localStorage.getItem("token")
+const CheckAuth = () => {
+    const data = sessionStorage.getItem("isLogin")
+
+    return data
 }
+
+export default CheckAuth

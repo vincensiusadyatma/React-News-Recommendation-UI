@@ -1,16 +1,18 @@
-import { checkAuth } from "../utils/checkAuth"
-import { Navigate, Outlet } from "react-router"
+import { Navigate, Outlet } from "react-router";
+
+import CheckAuth from "../utils/CheckAuth";
 
 const AuthOnly = () => {
-    if (!checkAuth()) {
-        return <Navigate to="/auth/login" replace />
+    if (CheckAuth() == "true") {
+         return(
+            <Outlet/>
+        )
     }else{
-        return (
-            <>
-                <Outlet />
-            </>
+        return(
+            <Navigate to="/auth/login"/>
         )
     }
-}
+   
 
-export default AuthOnly;
+}
+export default AuthOnly

@@ -6,28 +6,22 @@ import './index.css'
 import LoginPage from './pages/LoginPage.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
 import MainPage from './pages/MainPage.tsx'
-import GuestOnly from './guards/guestOnly.tsx'
-import AuthOnly from './guards/authOnly.tsx'
+import AuthOnly from './guards/AuthOnly.tsx'
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route element={<GuestOnly />}>
+          <Route element={<AuthOnly/>}>
+              <Route path='/main' element={<MainPage />} />
+          </Route>
           <Route path='/auth/login' element={<LoginPage />} />
           <Route path='/auth/register' element={<RegisterPage />} />
-        </Route>
-
-        <Route element={<AuthOnly />}>
-          <Route path='/main' element={<MainPage />} />
-        </Route>
-        
+          
       
-
 
       </Routes>
-      
- 
     </BrowserRouter>
     
   </StrictMode>,

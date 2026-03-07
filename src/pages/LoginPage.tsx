@@ -1,10 +1,32 @@
+
 import AuthLayout from "../layouts/AuthLayout";
-import { Link } from "react-router";
-import { login } from "../services/AuthService";
+import { Link, useNavigate } from "react-router";
+import { Login } from "../services/AuthService";
+import Loading from "../components/Loading";
+import { useState } from "react";
+
 
 const LoginPage = () => {
+    const [username,setUsername] = useState('');
+    const [password,setPassword] = useState('')
+    const [loading,setLoading] = useState(false)
+    const navigate = useNavigate()
+
+    const handleLogin = async () =>{
+        setLoading(true)
+        const response = await Login(username,password)
+        setLoading(false)
+        if(response.status == "success"){
+            
+            navigate("/main")
+        }
+       
+    }
+
+    
     return(
         <AuthLayout>
+            <Loading isLoading={loading}/>
             <div className="flex flex-col px-6 py-12 lg:px-8">
                 <div id="header-auth">
                     <h2 className="mt-10 text-center text-3xl/9 font-bold tracking-tight text-white">Login Form</h2>
@@ -12,23 +34,31 @@ const LoginPage = () => {
                 <div id="form-auth" className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                     <form action="" className="space-y-6" onSubmit={(e)=>{
                         e.preventDefault();
-                        login({
-                        username: "deathrix",
-                        password: "123",
-                        })
-
+                        handleLogin();
+                      
                     }}>
                         <div>
                             <label htmlFor="" className="block text-sm/6 font-medium text-gray-100">Username</label>
                             <div>
-                                <input type="text" className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"/>
+                                <input 
+                                type="text" 
+                                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                onChange={(e)=>{
+                                    setUsername(e.target.value)
+                                }}
+                                />
                             </div>
                         </div>
                 
                         <div>
                             <label htmlFor="" className="block text-sm/6 font-medium text-gray-100">Password</label>
                             <div>
-                                <input type="password" className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" />
+                                <input type="password" 
+                                className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6" 
+                                onChange={(e)=>{
+                                    setPassword(e.target.value)
+                                }}
+                                />
                             </div>
                         </div>
 

@@ -3,6 +3,7 @@ import AuthLayout from "../layouts/AuthLayout";
 import { Link, useNavigate } from "react-router";
 import { Login } from "../services/AuthService";
 import Loading from "../components/Loading";
+import { ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 
 
@@ -10,23 +11,34 @@ const LoginPage = () => {
     const [username,setUsername] = useState('');
     const [password,setPassword] = useState('')
     const [loading,setLoading] = useState(false)
+    
     const navigate = useNavigate()
 
     const handleLogin = async () =>{
         setLoading(true)
-        const response = await Login(username,password)
-        setLoading(false)
-        if(response.status == "success"){
-            
-            navigate("/main")
+        try {
+            const response = await Login(username,password)
+            if(response.status == "success"){
+                setLoading(false)
+                toast.success("Login Successfully",{onClose: ()=>{
+                    navigate("/main")
+                },autoClose:1500},) 
+            }   
+        }catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, {
+                    autoClose: 1500
+                })
         }
-       
+        }finally{
+            setLoading(false)
+        }
     }
 
-    
     return(
         <AuthLayout>
             <Loading isLoading={loading}/>
+            <ToastContainer />
             <div className="flex flex-col px-6 py-12 lg:px-8">
                 <div id="header-auth">
                     <h2 className="mt-10 text-center text-3xl/9 font-bold tracking-tight text-white">Login Form</h2>

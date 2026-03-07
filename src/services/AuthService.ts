@@ -22,11 +22,17 @@ const Login = async(username:string,password:string)=>{
     }
     try {
         const response = await axios.post(ApiConfig.BASE_URL+"/login",data,{withCredentials:true})
-        sessionStorage.setItem("isLogin","true")
         return response.data
-    } catch (error) {
-        console.log(error)
-    }
+    } catch (error: unknown) {
+
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "Login gagal"
+            throw new Error(message)
+        }else{
+            throw new Error("Error")
+        }
+
+}
 }
 
 export {Login,Register}

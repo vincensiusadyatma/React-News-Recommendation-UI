@@ -7,16 +7,20 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve-db": "json-server --watch ./src/mock-db.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.3",
+    "jwt-decode": "^4.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",
+    "react-loading-indicators": "^1.0.1",
     "react-router": "^7.13.0",
+    "react-toastify": "^11.0.5",
     "tailwindcss": "^4.1.18",
     "zod": "^4.3.6"
   },

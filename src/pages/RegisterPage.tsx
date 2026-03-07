@@ -1,9 +1,9 @@
 import AuthLayout from "../layouts/AuthLayout";
 import { Link, useNavigate } from "react-router";
 import {Register} from "../services/AuthService";
+import { ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 import Loading from "../components/Loading";
-
 
 const RegisterPage = () => {
     const [username,setUsername] = useState('');
@@ -13,15 +13,29 @@ const RegisterPage = () => {
 
     const handleSubmit = async () => {
         setLoading(true);
-        const response = await Register(username,password)
-        if(response?.status === "success"){
-            setLoading(false);
-            navigate("/auth/login");
+        try {
+            const response = await Register(username,password)
+            if(response?.status === "success"){
+                setLoading(false)
+                toast.success("Register Successfully",{onClose: ()=>{
+                    navigate("/auth/login")
+                },autoClose:1500},)
+             }
+        } catch (error) {
+            if (error instanceof Error) {
+                toast.error(error.message, {
+                    autoClose: 1500
+                })
+            }
+        }finally{
+            setLoading(false)
         }
+       
     }
     
     return(
         <AuthLayout>
+            <ToastContainer/>
            <Loading isLoading={loading}/>
             <div className="flex flex-col px-6 py-12 lg:px-8">
                 <div id="header-auth">
@@ -60,7 +74,7 @@ const RegisterPage = () => {
 
                     <p className="mt-10 text-center text-sm/6 text-gray-400">
                         Have An Account? 
-                        <Link to={"/auth/login"} className=" ms-2 font-semibold text-indigo-400 hover:text-indigo-300">Login</Link>
+                        <Link to={"/auth/login"} className=" ms-2 font-semibold text-indigo-400 hover:text-indigo-300">Register</Link>
                         
                     </p>
                 </div>

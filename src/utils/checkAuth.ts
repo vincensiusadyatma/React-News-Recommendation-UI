@@ -1,6 +1,5 @@
 const CheckAuth = () => {
     const data = sessionStorage.getItem("isLogin")
-
     return data
 }
 

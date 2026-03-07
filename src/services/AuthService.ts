@@ -11,7 +11,12 @@ const Register = async (username:string,password:string)=>{
         const response = await axios.post(ApiConfig.BASE_URL+"/register",data)
         return response.data;
     } catch (error) {
-        console.log(error)
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "Login gagal"
+            throw new Error(message)
+        }else{
+            throw new Error("Error")
+        }
     }
 }
 
@@ -22,8 +27,9 @@ const Login = async(username:string,password:string)=>{
     }
     try {
         const response = await axios.post(ApiConfig.BASE_URL+"/login",data,{withCredentials:true})
+        sessionStorage.setItem("isLogin","true")
         return response.data
-    } catch (error: unknown) {
+    } catch (error) {
 
         if (axios.isAxiosError(error)) {
             const message = error.response?.data?.message || "Login gagal"
@@ -31,8 +37,7 @@ const Login = async(username:string,password:string)=>{
         }else{
             throw new Error("Error")
         }
-
-}
+    }
 }
 
 export {Login,Register}

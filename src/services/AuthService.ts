@@ -30,7 +30,6 @@ const Login = async(username:string,password:string)=>{
         sessionStorage.setItem("isLogin","true")
         return response.data
     } catch (error) {
-
         if (axios.isAxiosError(error)) {
             const message = error.response?.data?.message || "Login gagal"
             throw new Error(message)
@@ -40,4 +39,19 @@ const Login = async(username:string,password:string)=>{
     }
 }
 
-export {Login,Register}
+const Logout = async () => {
+    try {
+        const response = await axios.post(ApiConfig.BASE_URL+"/logout",{},{withCredentials:true});
+        sessionStorage.setItem("isLogin","false")
+        return response.data
+    } catch (error) {
+         if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "Login gagal"
+            throw new Error(message)
+        }else{
+            throw new Error("Error")
+        }
+    }
+}
+
+export {Login, Register, Logout}

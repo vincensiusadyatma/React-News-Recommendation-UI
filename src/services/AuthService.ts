@@ -54,4 +54,18 @@ const Logout = async () => {
     }
 }
 
-export {Login, Register, Logout}
+const GetProfile = async () => {
+    try {
+        const response = await axios.get(ApiConfig.BASE_URL+"/profile",{withCredentials:true})
+        return response.data
+    } catch (error) {
+         if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "Get Profile gagal"
+            throw new Error(message)
+        }else{
+            throw new Error("Error")
+        }
+    }
+}
+
+export {Login, Register, Logout, GetProfile}

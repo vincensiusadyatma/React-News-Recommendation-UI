@@ -4,6 +4,7 @@ import MainLayout from "../layouts/MainLayout";
 import { Logout } from "../services/AuthService";
 import { ToastContainer, toast } from 'react-toastify';
 
+
 const MainPage = () => {
     const navigate = useNavigate()
     const handleLogout = async() => {

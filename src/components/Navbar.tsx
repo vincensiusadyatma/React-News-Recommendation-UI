@@ -1,8 +1,23 @@
 import { FaNewspaper, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
 import type { PropsType } from "../Types/PropsType";
+import { useEffect, useState } from "react";
+import { GetProfile } from "../services/AuthService";
 
 const Navbar = ({func}:PropsType) => {
-  const username = "Vincen";
+  const [username,setUsername] = useState('')
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const result = await GetProfile(); 
+        setUsername(result.username)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProfile(); 
+  }, []);
 
   return (
     <nav className="bg-[#030f26] text-white px-6 py-4 flex justify-between items-center border-b border-white/10 shadow-md">

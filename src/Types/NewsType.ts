@@ -1,6 +1,6 @@
 export type NewsType = {
-  id: number
+  id?: number
   title: string
-  link: string
+  link?: string
   content: string
 }

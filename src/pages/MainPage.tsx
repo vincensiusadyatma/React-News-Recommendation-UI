@@ -6,11 +6,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 import { GetNews } from "../services/NewsService";
 import type { NewsType } from "../Types/NewsType";
+import Pagination from "../components/Pagination";
 
 
 const MainPage = () => {
     const navigate = useNavigate()
     const [news,setNews] = useState<NewsType[]>([])
+    const [page, setPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1)
+
     const handleLogout = async() => {
         try {
             const result = await Logout()
@@ -31,28 +35,43 @@ const MainPage = () => {
     useEffect(()=>{
         const fetchNews = async () => {
         try {
-            const data = await GetNews(1,10);
+            const data = await GetNews(page,6);
             setNews(data.news)
+            setTotalPage(Math.ceil(data.total_pages))
         } catch (error) {
             console.log(error);
         }
     }
 
     fetchNews();
-    },[])
+    },[page])
 
     return (
         <MainLayout func={handleLogout}>
+
             <ToastContainer />
+
             <div className="max-w-7xl mx-auto px-6 py-6">
                 <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {news.map((item) => {
-                        return (
-                        <NewsCard key={item.id}  />
-                        )
-                    })}
+
+                    {news.map((item) => (
+                        <NewsCard
+                            key={item.id}
+                            title={item.title}
+                            content={item.content}
+                            
+                        />
+                    ))}
                 </div>
+
+                <Pagination
+                    page={page}
+                    totalPage={totalPage}
+                    setPage={setPage}
+                />
+
             </div>
+
         </MainLayout>
     )
 }

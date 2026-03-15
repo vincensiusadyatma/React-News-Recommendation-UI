@@ -33,4 +33,23 @@ const GetNews = async(page:number, perPage:number, query:string="") => {
     }
 }
 
-export {GetNews}
+const GetNewsDetail = async (id: number) => {
+    try {
+
+        const result = await axios.get(ApiConfig.BASE_URL + `/news/${id}`)
+
+        return result.data
+
+    } catch (error) {
+
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "Get News Detail Failed"
+            throw new Error(message)
+        } else {
+            throw new Error("Error")
+        }
+
+    }
+}
+
+export {GetNews,GetNewsDetail}

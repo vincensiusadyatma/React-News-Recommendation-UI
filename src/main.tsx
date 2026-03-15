@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage.tsx'
 import RegisterPage from './pages/RegisterPage.tsx'
 import MainPage from './pages/MainPage.tsx'
 import AuthOnly from './guards/AuthOnly.tsx'
+import NewsDetailPage from './pages/NewsDetailsPage.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
           <Route element={<AuthOnly/>}>
               <Route path='/main' element={<MainPage />} />
+              <Route path="/news/:id" element={<NewsDetailPage />} />
           </Route>
           <Route path='/auth/login' element={<LoginPage />} />
           <Route path='/auth/register' element={<RegisterPage />} />

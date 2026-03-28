@@ -52,4 +52,27 @@ const GetNewsDetail = async (id: number) => {
     }
 }
 
-export {GetNews,GetNewsDetail}
+
+const GetRecommendation = async (newsId: number, topK: number = 5) => {
+    try {
+        const result = await axios.get(
+            ApiConfig.BASE_URL + `/ucb/${newsId}`,
+            {
+                params: {
+                    top_k: topK
+                }
+            }
+        )
+
+        return result.data
+
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "Get Recommendation Failed"
+            throw new Error(message)
+        } else {
+            throw new Error("Error")
+        }
+    }
+}
+export {GetNews,GetNewsDetail, GetRecommendation}

@@ -4,10 +4,23 @@ import MainLayout from "../layouts/MainLayout"
 import { GetNewsDetail, GetRecommendation, SubmitFeedback } from "../services/NewsService"
 import type { NewsType } from "../Types/NewsType"
 import NewsModal from "../components/NewsModal"
+import NewsRankModal from "../components/NewsRankModal"
 
 type UCBItem = {
   news_id: number
   title: string
+  score?: number
+}
+
+type RankedItem = {
+  news_id: number
+  title: string
+  cbf_score: number
+  ucb_score: number
+  mean_reward: number
+  views: number
+  clicks: number
+  V_j: number
 }
 
 const NewsDetailPage = () => {
@@ -18,16 +31,20 @@ const NewsDetailPage = () => {
   const [recommendations, setRecommendations] = useState<NewsType[]>([])
   const [loading, setLoading] = useState(true)
 
-  // modal
+
   const [selectedNews, setSelectedNews] = useState<NewsType | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalLoading, setModalLoading] = useState(false)
 
-  // feedback (pakai object biar cepat)
+ 
+  const [allRanked, setAllRanked] = useState<RankedItem[]>([])
+  const [openRanked, setOpenRanked] = useState(false)
+
+
   const [feedbacks, setFeedbacks] = useState<Record<number, number>>({})
   const [submitting, setSubmitting] = useState(false)
 
-  // ================= FETCH =================
+  
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -35,21 +52,35 @@ const NewsDetailPage = () => {
 
         const newsId = Number(id)
 
+   
         const data = await GetNewsDetail(newsId)
         setNews(data)
 
+    
         const reco = await GetRecommendation(newsId, 3)
 
-        const normalized: NewsType[] = reco.data.map((item: UCBItem) => ({
-          id: item.news_id,
-          title: item.title,
-          content: ""
-        }))
+        if (!reco) return
 
-        setRecommendations(normalized)
+
+        if (reco.recommendations) {
+          const normalized: NewsType[] = reco.recommendations.map(
+            (item: UCBItem) => ({
+              id: item.news_id,
+              title: item.title,
+              content: ""
+            })
+          )
+          setRecommendations(normalized)
+        }
+
+     
+        if (reco.all_ranked) {
+          setAllRanked(reco.all_ranked)
+        }
 
       } catch (error) {
-        console.log(error)
+        console.log("FETCH ERROR:", error)
+        setRecommendations([])
       } finally {
         setLoading(false)
       }
@@ -58,7 +89,7 @@ const NewsDetailPage = () => {
     fetchNews()
   }, [id])
 
-  // ================= FEEDBACK =================
+
   const handleFeedback = (newsId: number, value: number) => {
     setFeedbacks(prev => ({
       ...prev,
@@ -73,11 +104,13 @@ const NewsDetailPage = () => {
     try {
       setSubmitting(true)
 
-      for (const [newsId, feedback] of entries) {
-        await SubmitFeedback(1, Number(newsId), feedback)
-      }
+      await Promise.all(
+        entries.map(([newsId, feedback]) =>
+          SubmitFeedback(1, Number(newsId), feedback)
+        )
+      )
 
-      alert("Feedback berhasil dikirim 🚀")
+      alert("Feedback berhasil dikirim")
       setFeedbacks({})
 
     } catch (err) {
@@ -148,10 +181,48 @@ const NewsDetailPage = () => {
           ← Back
         </button>
 
-        {/* TITLE */}
-        <h1 className="text-3xl font-bold text-white mb-6 leading-snug">
-          {news.title}
-        </h1>
+        {/* ================= TITLE + LIKE DISLIKE ================= */}
+        <div className="flex items-start justify-between mb-6 gap-4">
+
+          <h1 className="text-3xl font-bold text-white leading-snug">
+            {news.title}
+          </h1>
+
+          {news.id && (
+            <div className="flex items-center gap-2 shrink-0 mt-1">
+
+              {/* LIKE */}
+              <button
+                onClick={() => handleFeedback(news.id!, 1)}
+                className={`px-2 py-1 rounded text-xs border transition cursor-pointer
+                  ${
+                    feedbacks[news.id!] === 1
+                      ? "bg-green-400 text-black border-green-400"
+                      : "border-green-400 text-green-400 hover:bg-green-400/20"
+                  }`}
+                title="Like"
+              >
+                👍
+              </button>
+
+              {/* DISLIKE */}
+              <button
+                onClick={() => handleFeedback(news.id!, 0)}
+                className={`px-2 py-1 rounded text-xs border transition cursor-pointer
+                  ${
+                    feedbacks[news.id!] === 0
+                      ? "bg-red-400 text-black border-red-400"
+                      : "border-red-400 text-red-400 hover:bg-red-400/20"
+                  }`}
+                title="Dislike"
+              >
+                👎
+              </button>
+
+            </div>
+          )}
+
+        </div>
 
         {/* CONTENT */}
         <div className="text-blue-200 text-base leading-7 text-justify space-y-4">
@@ -180,12 +251,10 @@ const NewsDetailPage = () => {
                       className="flex items-center justify-between border border-white/30 rounded-md px-3 py-2 hover:bg-white/5 transition w-full"
                     >
 
-                      {/* TITLE */}
                       <h4 className="text-white text-sm font-medium line-clamp-1 flex-1 pr-4">
                         {item.title}
                       </h4>
 
-                      {/* ACTION */}
                       <div className="flex items-center gap-1.5 shrink-0">
 
                         <button
@@ -195,7 +264,6 @@ const NewsDetailPage = () => {
                           Detail
                         </button>
 
-                        {/* LIKE */}
                         <button
                           onClick={() => handleFeedback(item.id!, 1)}
                           className={`px-1.5 py-0.5 rounded text-[11px] border 
@@ -208,7 +276,6 @@ const NewsDetailPage = () => {
                           👍
                         </button>
 
-                        {/* DISLIKE */}
                         <button
                           onClick={() => handleFeedback(item.id!, 0)}
                           className={`px-1.5 py-0.5 rounded text-[11px] border 
@@ -228,7 +295,6 @@ const NewsDetailPage = () => {
 
               </div>
 
-              {/* SUBMIT */}
               {Object.keys(feedbacks).length > 0 && (
                 <div className="mt-4 text-right">
                   <button
@@ -254,12 +320,26 @@ const NewsDetailPage = () => {
         </div>
       </div>
 
-      {/* ================= MODAL ================= */}
+  
+      <button
+        onClick={() => setOpenRanked(true)}
+        className="fixed bottom-5 right-5 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full shadow-lg text-sm"
+      >
+        Rank
+      </button>
+
+      {/* MODALS */}
       <NewsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         data={selectedNews}
         loading={modalLoading}
+      />
+
+      <NewsRankModal
+        isOpen={openRanked}
+        onClose={() => setOpenRanked(false)}
+        data={allRanked}
       />
 
     </MainLayout>

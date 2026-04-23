@@ -65,7 +65,7 @@ const NewsRankedModal: React.FC<Props> = ({ isOpen, onClose, data }) => {
             {/* BODY */}
             <tbody>
               {data.map((item, index) => {
-                const isTop = index < 3
+                const isTop = index < 5
                 return (
                   <tr
                     key={item.news_id}

@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router"
 import MainLayout from "../layouts/MainLayout"
-import { GetNewsDetail, GetRecommendation, SubmitFeedback } from "../services/NewsService"
+import {
+  GetNewsDetail,
+  GetRecommendation,
+  SubmitFeedback
+} from "../services/NewsService"
+import LogService from "../services/LogService"
 import type { NewsType } from "../Types/NewsType"
 import NewsModal from "../components/NewsModal"
 import NewsRankModal from "../components/NewsRankModal"
@@ -31,20 +36,17 @@ const NewsDetailPage = () => {
   const [recommendations, setRecommendations] = useState<NewsType[]>([])
   const [loading, setLoading] = useState(true)
 
-
   const [selectedNews, setSelectedNews] = useState<NewsType | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalLoading, setModalLoading] = useState(false)
 
- 
   const [allRanked, setAllRanked] = useState<RankedItem[]>([])
   const [openRanked, setOpenRanked] = useState(false)
-
 
   const [feedbacks, setFeedbacks] = useState<Record<number, number>>({})
   const [submitting, setSubmitting] = useState(false)
 
-  
+ 
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -52,15 +54,11 @@ const NewsDetailPage = () => {
 
         const newsId = Number(id)
 
-   
         const data = await GetNewsDetail(newsId)
         setNews(data)
 
-    
-        const reco = await GetRecommendation(newsId, 3)
-
+        const reco = await GetRecommendation(newsId, 5)
         if (!reco) return
-
 
         if (reco.recommendations) {
           const normalized: NewsType[] = reco.recommendations.map(
@@ -70,16 +68,16 @@ const NewsDetailPage = () => {
               content: ""
             })
           )
+
           setRecommendations(normalized)
         }
 
-     
         if (reco.all_ranked) {
           setAllRanked(reco.all_ranked)
         }
 
-      } catch (error) {
-        console.log("FETCH ERROR:", error)
+      } catch (err) {
+        console.log(err)
         setRecommendations([])
       } finally {
         setLoading(false)
@@ -97,6 +95,7 @@ const NewsDetailPage = () => {
     }))
   }
 
+
   const handleSubmitFeedback = async () => {
     const entries = Object.entries(feedbacks)
     if (entries.length === 0) return
@@ -104,6 +103,20 @@ const NewsDetailPage = () => {
     try {
       setSubmitting(true)
 
+     
+      const recommendationIds = recommendations
+        .map(item => item.id!)
+        .filter(Boolean)
+
+  
+      const relevantIds = entries
+        .filter(([, val]) => val === 1)
+        .map(([id]) => Number(id))
+
+
+      await LogService.createLog(1, recommendationIds, relevantIds)
+
+   
       await Promise.all(
         entries.map(([newsId, feedback]) =>
           SubmitFeedback(1, Number(newsId), feedback)
@@ -121,7 +134,7 @@ const NewsDetailPage = () => {
     }
   }
 
-  // ================= MODAL =================
+
   const handleOpenModal = async (item: NewsType) => {
     if (!item.id) return
 
@@ -146,7 +159,7 @@ const NewsDetailPage = () => {
     setModalLoading(false)
   }
 
-  // ================= LOADING =================
+
   if (loading) {
     return (
       <MainLayout func={() => {}}>
@@ -167,13 +180,12 @@ const NewsDetailPage = () => {
     )
   }
 
-  // ================= MAIN =================
+
   return (
     <MainLayout func={() => {}}>
 
       <div className="max-w-3xl mx-auto px-6 py-10">
 
-        {/* BACK */}
         <button
           onClick={() => navigate(-1)}
           className="mb-6 text-blue-400 hover:text-blue-300 text-sm"
@@ -181,7 +193,6 @@ const NewsDetailPage = () => {
           ← Back
         </button>
 
-        {/* ================= TITLE + LIKE DISLIKE ================= */}
         <div className="flex items-start justify-between mb-6 gap-4">
 
           <h1 className="text-3xl font-bold text-white leading-snug">
@@ -191,30 +202,24 @@ const NewsDetailPage = () => {
           {news.id && (
             <div className="flex items-center gap-2 shrink-0 mt-1">
 
-              {/* LIKE */}
               <button
                 onClick={() => handleFeedback(news.id!, 1)}
-                className={`px-2 py-1 rounded text-xs border transition cursor-pointer
-                  ${
-                    feedbacks[news.id!] === 1
-                      ? "bg-green-400 text-black border-green-400"
-                      : "border-green-400 text-green-400 hover:bg-green-400/20"
+                className={`px-2 py-1 rounded text-xs border transition
+                  ${feedbacks[news.id!] === 1
+                    ? "bg-green-400 text-black border-green-400"
+                    : "border-green-400 text-green-400 hover:bg-green-400/20"
                   }`}
-                title="Like"
               >
                 👍
               </button>
 
-              {/* DISLIKE */}
               <button
                 onClick={() => handleFeedback(news.id!, 0)}
-                className={`px-2 py-1 rounded text-xs border transition cursor-pointer
-                  ${
-                    feedbacks[news.id!] === 0
-                      ? "bg-red-400 text-black border-red-400"
-                      : "border-red-400 text-red-400 hover:bg-red-400/20"
+                className={`px-2 py-1 rounded text-xs border transition
+                  ${feedbacks[news.id!] === 0
+                    ? "bg-red-400 text-black border-red-400"
+                    : "border-red-400 text-red-400 hover:bg-red-400/20"
                   }`}
-                title="Dislike"
               >
                 👎
               </button>
@@ -224,16 +229,14 @@ const NewsDetailPage = () => {
 
         </div>
 
-        {/* CONTENT */}
         <div className="text-blue-200 text-base leading-7 text-justify space-y-4">
-          {(news.content || "").split("\n").map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
+          {(news.content || "").split("\n").map((p, i) => (
+            <p key={i}>{p}</p>
           ))}
         </div>
 
         {/* ================= REKOMENDASI ================= */}
         <div className="mt-10">
-
           <h3 className="text-white text-lg font-semibold mb-4">
             Rekomendasi Berita
           </h3>
@@ -242,56 +245,49 @@ const NewsDetailPage = () => {
             <>
               <div className="flex flex-col gap-2">
 
-                {recommendations.map((item) => {
-                  if (!item.id) return null
+                {recommendations.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between border border-white/30 rounded-md px-3 py-2 hover:bg-white/5 transition w-full"
+                  >
+                    <h4 className="text-white text-sm font-medium line-clamp-1 flex-1 pr-4">
+                      {item.title}
+                    </h4>
 
-                  return (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between border border-white/30 rounded-md px-3 py-2 hover:bg-white/5 transition w-full"
-                    >
+                    <div className="flex items-center gap-1.5 shrink-0">
 
-                      <h4 className="text-white text-sm font-medium line-clamp-1 flex-1 pr-4">
-                        {item.title}
-                      </h4>
+                      <button
+                        onClick={() => handleOpenModal(item)}
+                        className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 py-1 rounded text-[11px]"
+                      >
+                        Detail
+                      </button>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => handleFeedback(item.id!, 1)}
+                        className={`px-1.5 py-0.5 rounded text-[11px] border
+                          ${feedbacks[item.id!] === 1
+                            ? "bg-green-400 text-black border-green-400"
+                            : "border-green-400 text-green-400"
+                          }`}
+                      >
+                        👍
+                      </button>
 
-                        <button
-                          onClick={() => handleOpenModal(item)}
-                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 py-1 rounded text-[11px]"
-                        >
-                          Detail
-                        </button>
+                      <button
+                        onClick={() => handleFeedback(item.id!, 0)}
+                        className={`px-1.5 py-0.5 rounded text-[11px] border
+                          ${feedbacks[item.id!] === 0
+                            ? "bg-red-400 text-black border-red-400"
+                            : "border-red-400 text-red-400"
+                          }`}
+                      >
+                        👎
+                      </button>
 
-                        <button
-                          onClick={() => handleFeedback(item.id!, 1)}
-                          className={`px-1.5 py-0.5 rounded text-[11px] border 
-                            ${
-                              feedbacks[item.id!] === 1
-                                ? "bg-green-400 text-black border-green-400"
-                                : "border-green-400 text-green-400"
-                            }`}
-                        >
-                          👍
-                        </button>
-
-                        <button
-                          onClick={() => handleFeedback(item.id!, 0)}
-                          className={`px-1.5 py-0.5 rounded text-[11px] border 
-                            ${
-                              feedbacks[item.id!] === 0
-                                ? "bg-red-400 text-black border-red-400"
-                                : "border-red-400 text-red-400"
-                            }`}
-                        >
-                          👎
-                        </button>
-
-                      </div>
                     </div>
-                  )
-                })}
+                  </div>
+                ))}
 
               </div>
 
@@ -300,11 +296,7 @@ const NewsDetailPage = () => {
                   <button
                     onClick={handleSubmitFeedback}
                     disabled={submitting}
-                    className={`px-4 py-2 rounded text-sm ${
-                      submitting
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-500 hover:bg-blue-600 text-white"
-                    }`}
+                    className="px-4 py-2 rounded text-sm bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     {submitting ? "Mengirim..." : "Submit Feedback"}
                   </button>
@@ -316,11 +308,9 @@ const NewsDetailPage = () => {
               Tidak ada rekomendasi
             </p>
           )}
-
         </div>
       </div>
 
-  
       <button
         onClick={() => setOpenRanked(true)}
         className="fixed bottom-5 right-5 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full shadow-lg text-sm"
@@ -328,7 +318,6 @@ const NewsDetailPage = () => {
         Rank
       </button>
 
-      {/* MODALS */}
       <NewsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

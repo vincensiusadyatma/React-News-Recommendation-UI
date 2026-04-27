@@ -235,7 +235,7 @@ const NewsDetailPage = () => {
           ))}
         </div>
 
-        {/* ================= REKOMENDASI ================= */}
+      
         <div className="mt-10">
           <h3 className="text-white text-lg font-semibold mb-4">
             Rekomendasi Berita

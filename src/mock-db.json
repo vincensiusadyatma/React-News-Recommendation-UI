@@ -1,0 +1,15 @@
+{
+  "user": [
+    {
+      "username": "deathrix",
+      "password": "123",
+      "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZWF0aHJpeCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjE3MDAwODY0MDB9.dummy_signature_123456",
+      "expiresIn": 86400
+    },
+    {
+      "username": "dito",
+      "password": "123"
+    }
+
+  ]
+}

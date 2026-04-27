@@ -11,6 +11,7 @@ type MapRow = {
 
 const MapPage = () => {
   const [data, setData] = useState<MapRow[]>([])
+  const [mapValue, setMapValue] = useState<number>(0) // ✅ GLOBAL MAP
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -23,14 +24,15 @@ const MapPage = () => {
       setLoading(true)
       setError(null)
 
+      // =========================
+      // GET AP PER USER
+      // =========================
       const result = await EvaluationService.getMAP()
 
-  
       if (!Array.isArray(result)) {
         throw new Error("Format data tidak valid")
       }
 
-    
       const safeData: MapRow[] = result.map((row: any) => ({
         user_id: Number(row.user_id),
         k1: Number(row.k1 ?? 0),
@@ -39,6 +41,20 @@ const MapPage = () => {
       }))
 
       setData(safeData)
+
+      // =========================
+      // HITUNG MAP GLOBAL (dari data frontend)
+      // =========================
+      let total = 0
+      let count = 0
+
+      safeData.forEach((row) => {
+        total += row.k1 + row.k3 + row.k5
+        count += 3
+      })
+
+      const map = count > 0 ? total / count : 0
+      setMapValue(map)
 
     } catch (err) {
       console.error("MAP ERROR:", err)
@@ -57,6 +73,20 @@ const MapPage = () => {
         <h1 className="text-white text-2xl font-bold mb-6">
           Average Precision per K
         </h1>
+
+        {/* ========================= */}
+        {/* MAP CARD */}
+        {/* ========================= */}
+        {!loading && !error && (
+          <div className="mb-6 bg-gradient-to-r from-purple-600 to-pink-600 p-6 rounded-xl shadow-lg">
+            <h2 className="text-white text-sm mb-2">
+              Mean Average Precision (MAP)
+            </h2>
+            <div className="text-white text-3xl font-bold">
+              {(mapValue * 100).toFixed(2)}%
+            </div>
+          </div>
+        )}
 
         {/* LOADING */}
         {loading && (

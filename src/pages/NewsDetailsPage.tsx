@@ -10,6 +10,7 @@ import LogService from "../services/LogService"
 import type { NewsType } from "../Types/NewsType"
 import NewsModal from "../components/NewsModal"
 import NewsRankModal from "../components/NewsRankModal"
+import { GetProfile } from "../services/AuthService"
 
 type UCBItem = {
   news_id: number
@@ -46,7 +47,20 @@ const NewsDetailPage = () => {
   const [feedbacks, setFeedbacks] = useState<Record<number, number>>({})
   const [submitting, setSubmitting] = useState(false)
 
- 
+  const [userId, setUserId] = useState<number | null>(null)
+ useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const res = await GetProfile()
+      setUserId(res.user_id)
+    } catch {
+      console.log("Belum login")
+    }
+  }
+
+  fetchProfile()
+}, [])
+
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -114,12 +128,16 @@ const NewsDetailPage = () => {
         .map(([id]) => Number(id))
 
 
-      await LogService.createLog(1, recommendationIds, relevantIds)
+        if (!userId) {
+        alert("User belum login")
+        return
+      }
 
-   
+      await LogService.createLog(userId, recommendationIds, relevantIds)
+
       await Promise.all(
         entries.map(([newsId, feedback]) =>
-          SubmitFeedback(1, Number(newsId), feedback)
+          SubmitFeedback(userId, Number(newsId), feedback)
         )
       )
 

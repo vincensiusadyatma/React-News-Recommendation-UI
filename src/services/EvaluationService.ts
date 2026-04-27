@@ -101,6 +101,12 @@ class EvaluationService {
   static async getMAP(): Promise<MetricRow[]> {
     return this.getMetric("/evaluation/ap")
   }
+
+  static async getGlobalMAP(): Promise<number> {
+  const data = await fetchJSON(`${ApiConfig.BASE_URL}/evaluation/map`)
+
+  return Number(data?.map ?? 0)
+}
 }
 
 export default EvaluationService

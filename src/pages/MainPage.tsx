@@ -22,6 +22,9 @@ const MainPage = () => {
         setQuery(inputQuery)
     }
 
+   
+
+
     const handleLogout = async() => {
         try {
             const result = await Logout()
@@ -78,6 +81,7 @@ const MainPage = () => {
                     {news.map((item) => (
                         <NewsCard
                             key={item.id}
+                            id={item.id}
                             title={item.title}
                             content={item.content}
                             

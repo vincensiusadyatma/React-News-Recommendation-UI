@@ -3,4 +3,5 @@ export type NewsType = {
   title: string
   link?: string
   content: string
+  clamp?: boolean
 }

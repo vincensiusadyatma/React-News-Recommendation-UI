@@ -8,27 +8,28 @@ const Pagination = ({ page, totalPage, setPage }: PaginationPropsType) => {
     pages.push(i)
   }
 
-   return (
-    <div className="flex justify-center items-center gap-2 mt-10">
+  return (
+    <div className="flex justify-center items-center gap-2 mt-10 text-white">
 
-      {/* Prev */}
+      {/* PREV */}
       <button
         onClick={() => setPage(page - 1)}
         disabled={page === 1}
-        className="px-3 py-2 border rounded-lg bg-white hover:bg-gray-100 disabled:opacity-40"
+        className="px-3 py-2 rounded-lg border border-white/20 bg-white/10 hover:bg-white/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
       >
         Prev
       </button>
 
-      {/* Page Numbers */}
+      {/* PAGE NUMBERS */}
       {pages.map((p) => (
         <button
           key={p}
           onClick={() => setPage(p)}
-          className={`px-3 py-2 border rounded-lg transition
+          className={`
+            px-3 py-2 rounded-lg border transition
             ${page === p
-              ? "bg-blue-500 text-white border-blue-500"
-              : "bg-white hover:bg-gray-100"
+              ? "bg-white text-black border-white"
+              : "bg-white/10 border-white/20 hover:bg-white/20 text-white"
             }
           `}
         >
@@ -36,11 +37,11 @@ const Pagination = ({ page, totalPage, setPage }: PaginationPropsType) => {
         </button>
       ))}
 
-      {/* Next */}
+      {/* NEXT */}
       <button
         onClick={() => setPage(page + 1)}
         disabled={page === totalPage}
-        className="px-3 py-2 border rounded-lg bg-white hover:bg-gray-100 disabled:opacity-40"
+        className="px-3 py-2 rounded-lg border border-white/20 bg-white/10 hover:bg-white/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
       >
         Next
       </button>
@@ -48,7 +49,5 @@ const Pagination = ({ page, totalPage, setPage }: PaginationPropsType) => {
     </div>
   )
 }
-
-
 
 export default Pagination

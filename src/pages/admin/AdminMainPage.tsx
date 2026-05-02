@@ -129,6 +129,18 @@ const AdminMainPage = () => {
               </svg>
             }
           />
+        <div className="md:col-span-2">
+          <Card
+            title="Manage News"
+            color="text-indigo-400"
+            onClick={() => navigate("/admin/manage")}
+            icon={
+              <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 6h16M4 12h16M4 18h10"/>
+              </svg>
+            }
+          />
+        </div>
 
         </div>
 

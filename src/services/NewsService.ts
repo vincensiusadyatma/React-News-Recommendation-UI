@@ -34,13 +34,13 @@ const GetNews = async (page: number, perPage: number, query: string = "") => {
         const data = await response.json();
         return data;
 
-    } catch (error: unknown) {
-    if (error instanceof Error) {
-        console.log(error.message);
-    } else {
-        console.log("Error tidak diketahui");
+        } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.log(error.message);
+        } else {
+            console.log("Error tidak diketahui");
+        }
     }
-}
 };
 
 const GetNewsDetail = async (id: number) => {
@@ -53,8 +53,8 @@ const GetNewsDetail = async (id: number) => {
             try {
                 const errData = await res.json();
                 message = errData.message || message;
-            } catch {
-                // kosong
+            } catch(err){
+                console.log(err)
             }
 
             throw new Error(message);
@@ -81,8 +81,8 @@ const GetRecommendation = async (newsId: number, topK: number = 5) => {
             try {
                 const errData = await res.json();
                 message = errData.message || message;
-            } catch {
-                // kosong
+            } catch(err) {
+                console.log(err)
             }
 
             throw new Error(message);
@@ -120,8 +120,8 @@ const SubmitFeedback = async (
       try {
         const errData = await res.json();
         message = errData.message || message;
-      } catch {
-        // kosong
+      } catch(err) {
+        console.log(err)
       }
 
       throw new Error(message);
@@ -134,4 +134,102 @@ const SubmitFeedback = async (
     throw new Error(error instanceof Error ? error.message : "Error");
   }
 };
-export {GetNews,GetNewsDetail, GetRecommendation, SubmitFeedback}
+
+
+const CreateNews = async (title: string, content: string) => {
+    try {
+        const res = await fetch(ApiConfig.BASE_URL + "/news", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title,
+                content
+            })
+        });
+
+        if (!res.ok) {
+            let message = "Create News Failed";
+
+            try {
+                const errData = await res.json();
+                message = errData.error || message;
+            } catch(err) {
+                console.log(err)
+            }
+
+            throw new Error(message);
+        }
+
+        return await res.json();
+
+    } catch (error: unknown) {
+        throw new Error(error instanceof Error ? error.message : "Error");
+    }
+};
+
+
+const UpdateNews = async (
+    id: number,
+    title?: string,
+    content?: string
+) => {
+    try {
+        const res = await fetch(ApiConfig.BASE_URL + `/news/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title,
+                content
+            })
+        });
+
+        if (!res.ok) {
+            let message = "Update News Failed";
+
+            try {
+                const errData = await res.json();
+                message = errData.error || message;
+            } catch(err) {
+                console.log(err)
+            }
+
+            throw new Error(message);
+        }
+
+        return await res.json();
+
+    } catch (error: unknown) {
+        throw new Error(error instanceof Error ? error.message : "Error");
+    }
+};
+
+const DeleteNews = async (id: number) => {
+    try {
+        const res = await fetch(ApiConfig.BASE_URL + `/news/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            let message = "Delete News Failed";
+
+            try {
+                const errData = await res.json();
+                message = errData.error || message;
+            } catch(err) {
+                console.log(err)
+            }
+
+            throw new Error(message);
+        }
+
+        return await res.json();
+
+    } catch (error: unknown) {
+        throw new Error(error instanceof Error ? error.message : "Error");
+    }
+};
+export {GetNews,GetNewsDetail, GetRecommendation, SubmitFeedback, CreateNews, UpdateNews, DeleteNews}

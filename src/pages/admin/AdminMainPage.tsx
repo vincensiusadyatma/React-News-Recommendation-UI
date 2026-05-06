@@ -13,13 +13,11 @@ const AdminMainPage = () => {
 
       const result = await EvaluationService.syncEvaluation()
 
-     
       if (!result || !result.global_summary) {
         throw new Error("Response tidak valid dari server")
       }
 
       const { precision, recall, f1_score, map } = result.global_summary
-
 
       const perKText = result.summary_by_k
         .map(k => `K=${k.k} → P:${k.precision.toFixed(2)} R:${k.recall.toFixed(2)}`)
@@ -27,15 +25,12 @@ const AdminMainPage = () => {
 
       alert(
         `Sync Berhasil!\n\n` +
-
         `=== GLOBAL ===\n` +
         `Precision : ${precision.toFixed(3)}\n` +
         `Recall    : ${recall.toFixed(3)}\n` +
         `F1 Score  : ${f1_score.toFixed(3)}\n` +
         `MAP       : ${map.toFixed(3)}\n\n` +
-
         `=== PER K ===\n${perKText}\n\n` +
-
         `Total Rows: ${result.total_rows}`
       )
 
@@ -129,7 +124,8 @@ const AdminMainPage = () => {
               </svg>
             }
           />
-        <div className="md:col-span-2">
+
+          {/* 🔥 ROW TERAKHIR (2 KOLOM SEJAJAR) */}
           <Card
             title="Manage News"
             color="text-indigo-400"
@@ -140,7 +136,18 @@ const AdminMainPage = () => {
               </svg>
             }
           />
-        </div>
+
+          <Card
+            title="Statistic"
+            color="text-yellow-400"
+            onClick={() => navigate("/admin/stat")}
+            icon={
+              <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 17l6-6 4 4 8-8"/>
+                <path d="M21 10v11H3V3h11"/>
+              </svg>
+            }
+          />
 
         </div>
 
@@ -149,7 +156,6 @@ const AdminMainPage = () => {
     </MainLayout>
   )
 }
-
 
 type CardProps = {
   title: string

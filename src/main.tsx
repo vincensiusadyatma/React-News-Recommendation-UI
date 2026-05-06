@@ -35,7 +35,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/admin/map' element={<MapPage />} />
           <Route path='/admin/manage' element={<ManageNewsPage />} />
           <Route path='/admin/stat' element={<StatMainPage />} />
-           <Route path='/admin/stat/details' element={<DetailStatPage />} />
+         <Route path='/admin/stat/details/:userId' element={<DetailStatPage />} />
           
       
 

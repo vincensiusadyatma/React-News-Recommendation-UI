@@ -1,6 +1,13 @@
 import ApiConfig from "../config/ApiConfig"
 
-
+export type UserMetricDetail = {
+  user_id: number
+  precision: Record<string, number>
+  recall: Record<string, number>
+  f1_score: Record<string, number>
+  average_precision: Record<string, number>
+  map: number
+}
 export type MetricRow = {
   user_id: number
   k1: number
@@ -109,6 +116,20 @@ class EvaluationService {
   const data = await fetchJSON(`${ApiConfig.BASE_URL}/evaluation/map`)
 
   return Number(data?.map ?? 0)
+}
+static async getMetricByUserId(userId: number): Promise<UserMetricDetail> {
+  const data = await fetchJSON(
+    `${ApiConfig.BASE_URL}/evaluation/user/${userId}`
+  )
+
+  return {
+    user_id: Number(data.user_id),
+    precision: data.precision || {},
+    recall: data.recall || {},
+    f1_score: data.f1_score || {},
+    average_precision: data.average_precision || {},
+    map: Number(data.map ?? 0)
+  }
 }
 }
 

@@ -11,7 +11,10 @@
     "serve-db": "json-server --watch ./src/mock-db.json"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
+    "@mui/x-charts": "^9.0.4",
     "@tailwindcss/vite": "^4.1.18",
     "jwt-decode": "^4.0.0",
     "react": "^19.2.0",

@@ -117,4 +117,35 @@ const GetProfile = async () => {
     }
 };
 
-export {Login, Register, Logout, GetProfile}
+const GetUsers = async (page: number = 1, perPage: number = 20) => {
+    try {
+        const res = await fetch(
+            `${ApiConfig.BASE_URL}/users?page=${page}&per_page=${perPage}`,
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
+
+        if (!res.ok) {
+            let message = "Get Users gagal";
+
+            try {
+                const errData = await res.json();
+                message = errData.message || message;
+            } catch {
+                // ignore
+            }
+
+            throw new Error(message);
+        }
+
+        const data = await res.json();
+        return data;
+
+    } catch (error: unknown) {
+        throw new Error(error instanceof Error ? error.message : "Error");
+    }
+};
+
+export {Login, Register, Logout, GetProfile, GetUsers}

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react"
 import MainLayout from "../../layouts/MainLayout"
 import EvaluationService from "../../services/EvaluationService"
 
+
 type RecallRow = {
   user_id: number
   k1: number
+  k2: number
   k3: number
+  k4: number
   k5: number
 }
 
@@ -24,7 +27,6 @@ const RecallPage = () => {
       setError(null)
 
       const result = await EvaluationService.getRecall()
-
       setData(result)
 
     } catch (err) {
@@ -75,7 +77,9 @@ const RecallPage = () => {
                 <tr>
                   <th className="px-4 py-3 text-left">User ID</th>
                   <th className="px-4 py-3 text-center">K = 1</th>
+                  <th className="px-4 py-3 text-center">K = 2</th>
                   <th className="px-4 py-3 text-center">K = 3</th>
+                  <th className="px-4 py-3 text-center">K = 4</th>
                   <th className="px-4 py-3 text-center">K = 5</th>
                 </tr>
               </thead>
@@ -96,13 +100,22 @@ const RecallPage = () => {
                       {row.k1.toFixed(3)}
                     </td>
 
+                    <td className="px-4 py-3 text-center text-yellow-400 font-medium">
+                      {row.k2.toFixed(3)}
+                    </td>
+
                     <td className="px-4 py-3 text-center text-blue-400 font-medium">
                       {row.k3.toFixed(3)}
+                    </td>
+
+                    <td className="px-4 py-3 text-center text-pink-400 font-medium">
+                      {row.k4.toFixed(3)}
                     </td>
 
                     <td className="px-4 py-3 text-center text-purple-400 font-medium">
                       {row.k5.toFixed(3)}
                     </td>
+
                   </tr>
                 ))}
 

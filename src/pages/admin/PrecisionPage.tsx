@@ -5,7 +5,9 @@ import EvaluationService from "../../services/EvaluationService"
 type PrecisionRow = {
   user_id: number
   k1: number
+  k2?: number
   k3: number
+  k4?: number
   k5: number
 }
 
@@ -60,15 +62,19 @@ const PrecisionPage = () => {
 
             <table className="w-full border border-white/10 rounded-xl overflow-hidden">
 
+              {/* HEADER */}
               <thead className="bg-[#1e293b] text-gray-300 text-sm">
                 <tr>
                   <th className="px-4 py-3 text-left">User ID</th>
                   <th className="px-4 py-3 text-center">K = 1</th>
+                  <th className="px-4 py-3 text-center">K = 2</th>
                   <th className="px-4 py-3 text-center">K = 3</th>
+                  <th className="px-4 py-3 text-center">K = 4</th>
                   <th className="px-4 py-3 text-center">K = 5</th>
                 </tr>
               </thead>
 
+              {/* BODY */}
               <tbody className="text-gray-200 text-sm">
 
                 {data.map((row) => (
@@ -84,8 +90,16 @@ const PrecisionPage = () => {
                       {row.k1.toFixed(3)}
                     </td>
 
+                    <td className="px-4 py-3 text-center text-yellow-400 font-medium">
+                      {(row.k2 ?? 0).toFixed(3)}
+                    </td>
+
                     <td className="px-4 py-3 text-center text-blue-400 font-medium">
                       {row.k3.toFixed(3)}
+                    </td>
+
+                    <td className="px-4 py-3 text-center text-pink-400 font-medium">
+                      {(row.k4 ?? 0).toFixed(3)}
                     </td>
 
                     <td className="px-4 py-3 text-center text-purple-400 font-medium">

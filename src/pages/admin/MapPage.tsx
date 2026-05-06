@@ -2,16 +2,18 @@ import { useEffect, useState } from "react"
 import MainLayout from "../../layouts/MainLayout"
 import EvaluationService from "../../services/EvaluationService"
 
+
 type MapRow = {
   user_id: number
-  k1: number
-  k3: number
-  k5: number
+  [key: string]: number
 }
+
+
+const kValues = [1, 2, 3, 4, 5]
 
 const MapPage = () => {
   const [data, setData] = useState<MapRow[]>([])
-  const [mapValue, setMapValue] = useState<number>(0) // ✅ GLOBAL MAP
+  const [mapValue, setMapValue] = useState<number>(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -24,33 +26,35 @@ const MapPage = () => {
       setLoading(true)
       setError(null)
 
-      // =========================
-      // GET AP PER USER
-      // =========================
       const result = await EvaluationService.getMAP()
 
       if (!Array.isArray(result)) {
         throw new Error("Format data tidak valid")
       }
 
-      const safeData: MapRow[] = result.map((row: any) => ({
-        user_id: Number(row.user_id),
-        k1: Number(row.k1 ?? 0),
-        k3: Number(row.k3 ?? 0),
-        k5: Number(row.k5 ?? 0)
-      }))
+      const safeData: MapRow[] = result.map((row: any) => {
+        const obj: MapRow = {
+          user_id: Number(row.user_id),
+        }
+
+        kValues.forEach((k) => {
+          obj[`k${k}`] = Number(row[`k${k}`] ?? 0)
+        })
+
+        return obj
+      })
 
       setData(safeData)
 
-      // =========================
-      // HITUNG MAP GLOBAL (dari data frontend)
-      // =========================
+
       let total = 0
       let count = 0
 
       safeData.forEach((row) => {
-        total += row.k1 + row.k3 + row.k5
-        count += 3
+        kValues.forEach((k) => {
+          total += row[`k${k}`]
+          count++
+        })
       })
 
       const map = count > 0 ? total / count : 0
@@ -117,9 +121,12 @@ const MapPage = () => {
               <thead className="bg-[#1e293b] text-gray-300 text-sm">
                 <tr>
                   <th className="px-4 py-3 text-left">User ID</th>
-                  <th className="px-4 py-3 text-center">K = 1</th>
-                  <th className="px-4 py-3 text-center">K = 3</th>
-                  <th className="px-4 py-3 text-center">K = 5</th>
+
+                  {kValues.map((k) => (
+                    <th key={k} className="px-4 py-3 text-center">
+                      K = {k}
+                    </th>
+                  ))}
                 </tr>
               </thead>
 
@@ -135,17 +142,17 @@ const MapPage = () => {
                       {row.user_id}
                     </td>
 
-                    <td className="px-4 py-3 text-center text-purple-400 font-semibold">
-                      {row.k1.toFixed(3)}
-                    </td>
+                    {kValues.map((k) => (
+                      <td
+                        key={k}
+                        className="px-4 py-3 text-center text-purple-400 font-semibold"
+                      >
+                        {row[`k${k}`]
+                          ? row[`k${k}`].toFixed(3)
+                          : "0.000"}
+                      </td>
+                    ))}
 
-                    <td className="px-4 py-3 text-center text-indigo-400 font-semibold">
-                      {row.k3.toFixed(3)}
-                    </td>
-
-                    <td className="px-4 py-3 text-center text-pink-400 font-semibold">
-                      {row.k5.toFixed(3)}
-                    </td>
                   </tr>
                 ))}
 

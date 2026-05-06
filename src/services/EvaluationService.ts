@@ -4,10 +4,11 @@ import ApiConfig from "../config/ApiConfig"
 export type MetricRow = {
   user_id: number
   k1: number
+  k2: number
   k3: number
+  k4: number
   k5: number
 }
-
 export type EvaluationSummary = {
   precision: number
   recall: number
@@ -78,9 +79,11 @@ class EvaluationService {
 
       return {
         user_id: Number(r.user_id),
-        k1: Number(r.k1 ?? 0),
+       k1: Number(r.k1 ?? 0),
+        k2: Number(r.k2 ?? 0),
         k3: Number(r.k3 ?? 0),
-        k5: Number(r.k5 ?? 0)
+        k4: Number(r.k4 ?? 0),
+        k5: Number(r.k5 ?? 0),
       }
     })
   }

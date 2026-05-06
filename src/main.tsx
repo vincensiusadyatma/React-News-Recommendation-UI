@@ -14,6 +14,8 @@ import PrecisionPage from './pages/admin/PrecisionPage.tsx'
 import F1Page from './pages/admin/F1Page.tsx'
 import MapPage from './pages/admin/MapPage.tsx'
 import ManageNewsPage from './pages/admin/ManageNewsPage.tsx'
+import StatMainPage from './pages/admin/StatMainPage.tsx'
+import DetailStatPage from './pages/admin/DetailStatPage.tsx'
 
 
 createRoot(document.getElementById('root')!).render(
@@ -32,6 +34,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/admin/f1' element={<F1Page />} />
           <Route path='/admin/map' element={<MapPage />} />
           <Route path='/admin/manage' element={<ManageNewsPage />} />
+          <Route path='/admin/stat' element={<StatMainPage />} />
+           <Route path='/admin/stat/details' element={<DetailStatPage />} />
           
       
 

@@ -1,45 +1,26 @@
 import ApiConfig from "../config/ApiConfig";
 
-
-export type RecommendationLogPayload = {
-  user_id: number;
-  recommendations: number[];
-  relevants: number[];
-};
-
-export type RecommendationLogResponse = {
-  status: string;
-  message: string;
-  data: {
-    id: number;
-    user_id: number;
-    recommendations: number[];
-    relevants: number[];
-  };
-};
-
 class LogService {
 
-  
-static async createLog(
-  userId: number,
-  recommendations: number[],
-  relevants: number[]
-) {
-  const res = await fetch(ApiConfig.BASE_URL + "/log", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      user_id: userId,
-      recommendations: recommendations,
-      relevants: relevants
+  static async createLog(
+    userId: number,
+    recommendations: number[],
+    relevants: number[]
+  ) {
+    const res = await fetch(ApiConfig.BASE_URL + "/log", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        recommendations: recommendations,
+        relevants: relevants
+      })
     })
-  })
 
-  return await res.json()
-}
+    return await res.json()
+  }
 
   static async getLogs() {
     const res = await fetch(`${ApiConfig.BASE_URL}/logs`);

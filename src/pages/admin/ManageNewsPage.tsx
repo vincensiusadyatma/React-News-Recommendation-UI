@@ -57,24 +57,6 @@ const ManageNewsPage = () => {
     };
 
    const fetchNews = useCallback(async () => {
-    try {
-        let data;
-
-        if (query.trim() === "") {
-            data = await GetNews(page, 6);
-        } else {
-            data = await GetNews(page, 6, query);
-        }
-
-        setNews(data?.news || []);
-        setTotalPage(data?.total_pages || 1);
-    } catch (error) {
-        console.log(error);
-    }
-}, [page, query]);
-
-useEffect(() => {
-    const loadNews = async () => {
         try {
             let data;
 
@@ -89,10 +71,9 @@ useEffect(() => {
         } catch (error) {
             console.log(error);
         }
-    };
+    }, [page, query]);
 
-    loadNews();
-}, [page, query]);
+
     const handleView = (item: NewsType) => {
         setSelectedNews(item);
         setShowView(true);
@@ -155,6 +136,27 @@ useEffect(() => {
             toast.error(err instanceof Error ? err.message : "Gagal create");
         }
     };
+
+    useEffect(() => {
+        const loadNews = async () => {
+            try {
+                let data;
+
+                if (query.trim() === "") {
+                    data = await GetNews(page, 6);
+                } else {
+                    data = await GetNews(page, 6, query);
+                }
+
+                setNews(data?.news || []);
+                setTotalPage(data?.total_pages || 1);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        loadNews();
+    }, [page, query]);
 
     return (
         <MainLayout func={handleLogout}>

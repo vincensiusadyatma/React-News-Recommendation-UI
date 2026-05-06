@@ -8,7 +8,6 @@ type MapRow = {
   [key: string]: number
 }
 
-
 const kValues = [1, 2, 3, 4, 5]
 
 const MapPage = () => {

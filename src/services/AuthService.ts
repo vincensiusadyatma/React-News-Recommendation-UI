@@ -20,6 +20,7 @@ const Register = async (username: string, password: string) => {
         throw new Error(error instanceof Error ? error.message : "Error");
     }
 };
+
 const Login = async (username: string, password: string) => {
     try {
         const res = await fetch(ApiConfig.BASE_URL + "/login", {

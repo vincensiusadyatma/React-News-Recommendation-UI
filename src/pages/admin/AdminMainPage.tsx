@@ -2,6 +2,7 @@ import { useNavigate } from "react-router"
 import { useState } from "react"
 import MainLayout from "../../layouts/MainLayout"
 import EvaluationService from "../../services/EvaluationService"
+import LinkCard from "../../components/LinkCard"
 
 const AdminMainPage = () => {
   const navigate = useNavigate()
@@ -50,7 +51,6 @@ const AdminMainPage = () => {
 
   return (
     <MainLayout func={() => {}}>
-
       <div className="px-6 py-10 max-w-5xl mx-auto">
 
         {/* HEADER */}
@@ -76,7 +76,7 @@ const AdminMainPage = () => {
         {/* CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <Card
+          <LinkCard
             title="Precision"
             color="text-blue-400"
             onClick={() => navigate("/admin/precision")}
@@ -88,7 +88,7 @@ const AdminMainPage = () => {
             }
           />
 
-          <Card
+          <LinkCard
             title="Recall"
             color="text-green-400"
             onClick={() => navigate("/admin/recall")}
@@ -100,7 +100,7 @@ const AdminMainPage = () => {
             }
           />
 
-          <Card
+          <LinkCard
             title="Mean Average Precision"
             color="text-purple-400"
             onClick={() => navigate("/admin/map")}
@@ -113,7 +113,7 @@ const AdminMainPage = () => {
             }
           />
 
-          <Card
+          <LinkCard
             title="F1 Score"
             color="text-red-400"
             onClick={() => navigate("/admin/f1")}
@@ -125,8 +125,7 @@ const AdminMainPage = () => {
             }
           />
 
-          {/* 🔥 ROW TERAKHIR (2 KOLOM SEJAJAR) */}
-          <Card
+          <LinkCard
             title="Manage News"
             color="text-indigo-400"
             onClick={() => navigate("/admin/manage")}
@@ -137,7 +136,7 @@ const AdminMainPage = () => {
             }
           />
 
-          <Card
+          <LinkCard
             title="Statistic"
             color="text-yellow-400"
             onClick={() => navigate("/admin/stat")}
@@ -150,38 +149,12 @@ const AdminMainPage = () => {
           />
 
         </div>
-
       </div>
 
     </MainLayout>
   )
 }
 
-type CardProps = {
-  title: string
-  color: string
-  icon: React.ReactNode
-  onClick: () => void
-}
 
-const Card = ({ title, color, icon, onClick }: CardProps) => {
-  return (
-    <div
-      onClick={onClick}
-      className="bg-[#1e293b] border border-white/10 rounded-2xl p-6 shadow-md hover:shadow-xl hover:scale-[1.02] transition cursor-pointer"
-    >
-
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-gray-300 text-sm">{title}</h3>
-        <div className={color}>{icon}</div>
-      </div>
-
-      <div className={`text-lg font-semibold ${color}`}>
-        View Detail →
-      </div>
-
-    </div>
-  )
-}
 
 export default AdminMainPage

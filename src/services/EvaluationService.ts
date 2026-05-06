@@ -1,41 +1,8 @@
 import ApiConfig from "../config/ApiConfig"
 
-export type UserMetricDetail = {
-  user_id: number
-  precision: Record<string, number>
-  recall: Record<string, number>
-  f1_score: Record<string, number>
-  average_precision: Record<string, number>
-  map: number
-}
-export type MetricRow = {
-  user_id: number
-  k1: number
-  k2: number
-  k3: number
-  k4: number
-  k5: number
-}
-export type EvaluationSummary = {
-  precision: number
-  recall: number
-  f1_score: number
-  map: number
-}
-
-export type EvaluationByK = {
-  k: number
-  precision: number
-  recall: number
-  f1_score: number
-}
-
-export type SyncResponse = {
-  message: string
-  total_rows: number
-  summary_by_k: EvaluationByK[]
-  global_summary: EvaluationSummary
-}
+import type { SyncResponse } from "../Types/Evaluations/SyncResponse"
+import type { MetricRow } from "../Types/Evaluations/MetricRow"
+import type { UserMetricDetail } from "../Types/Evaluations/UserMetricDetail"
 
 
 async function fetchJSON(url: string, options?: RequestInit) {
@@ -51,7 +18,6 @@ async function fetchJSON(url: string, options?: RequestInit) {
 
 
 class EvaluationService {
-
   static async syncEvaluation(): Promise<SyncResponse> {
     const data = await fetchJSON(
       `${ApiConfig.BASE_URL}/evaluation/sync`,
@@ -113,24 +79,25 @@ class EvaluationService {
   }
 
   static async getGlobalMAP(): Promise<number> {
-  const data = await fetchJSON(`${ApiConfig.BASE_URL}/evaluation/map`)
+    const data = await fetchJSON(`${ApiConfig.BASE_URL}/evaluation/map`)
 
-  return Number(data?.map ?? 0)
-}
-static async getMetricByUserId(userId: number): Promise<UserMetricDetail> {
-  const data = await fetchJSON(
-    `${ApiConfig.BASE_URL}/evaluation/user/${userId}`
-  )
-
-  return {
-    user_id: Number(data.user_id),
-    precision: data.precision || {},
-    recall: data.recall || {},
-    f1_score: data.f1_score || {},
-    average_precision: data.average_precision || {},
-    map: Number(data.map ?? 0)
+    return Number(data?.map ?? 0)
   }
-}
+
+  static async getMetricByUserId(userId: number): Promise<UserMetricDetail> {
+    const data = await fetchJSON(
+      `${ApiConfig.BASE_URL}/evaluation/user/${userId}`
+    )
+
+    return {
+      user_id: Number(data.user_id),
+      precision: data.precision || {},
+      recall: data.recall || {},
+      f1_score: data.f1_score || {},
+      average_precision: data.average_precision || {},
+      map: Number(data.map ?? 0)
+    }
+  }
 }
 
 export default EvaluationService

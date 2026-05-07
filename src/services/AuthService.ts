@@ -1,4 +1,5 @@
 import ApiConfig from "../config/ApiConfig"
+
 // import axios from 'axios';
 // import { jwtDecode } from "jwt-decode";
 
@@ -94,7 +95,7 @@ const GetProfile = async () => {
     try {
         const res = await fetch(ApiConfig.BASE_URL + "/profile", {
             method: "GET",
-            credentials: "include" 
+            credentials: "include"
         });
 
         if (!res.ok) {
@@ -104,13 +105,21 @@ const GetProfile = async () => {
                 const errData = await res.json();
                 message = errData.message || message;
             } catch {
-                // kosong
+                // ignore
             }
 
             throw new Error(message);
         }
 
         const data = await res.json();
+
+      
+        if (data?.role === "admin") {
+            sessionStorage.setItem("isAdmin", "true");
+        } else {
+            sessionStorage.setItem("isAdmin", "false");
+        }
+
         return data;
 
     } catch (error: unknown) {
